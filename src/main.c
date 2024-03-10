@@ -1,109 +1,98 @@
-#include <cstdio> //stdandard output
-#include <cstdlib>
+#include <SoapySDR/Device.h>
+#include <SoapySDR/Formats.h>
+#include <stdio.h> //printf
+#include <stdlib.h> //free
+#include <complex.h>
 
-#include <SoapySDR/Device.hpp>
-#include <SoapySDR/Types.hpp>
-#include <SoapySDR/Formats.hpp>
-
-#include <string> // std::string
-#include <vector> // std::vector<...>
-#include <map>    // std::map< ... , ... >
-
-#include <iostream>
-
-
-int main()
+int main(void)
 {
+    size_t length;
 
-  // 0. enumerate devices (list all devices' information)
-  SoapySDR::KwargsList results = SoapySDR::Device::enumerate();
-  SoapySDR::Kwargs::iterator it;
-
-  for (int i = 0; i < results.size(); ++i)
-  {
-    printf("Found device #%d: ", i);
-    for (it = results[i].begin(); it != results[i].end(); ++it)
+    //enumerate devices
+    SoapySDRKwargs *results = SoapySDRDevice_enumerate(NULL, &length);
+    for (size_t i = 0; i < length; i++)
     {
-      printf("%s = %s\n", it->first.c_str(), it->second.c_str());
+        printf("Found device #%d: ", (int)i);
+        for (size_t j = 0; j < results[i].size; j++)
+        {
+            printf("%s=%s, ", results[i].keys[j], results[i].vals[j]);
+        }
+        printf("\n");
     }
+    SoapySDRKwargsList_clear(results, length);
+
+    //create device instance
+    //args can be user defined or from the enumeration result
+    SoapySDRKwargs args = {};
+    SoapySDRKwargs_set(&args, "driver", "rtlsdr");
+    SoapySDRDevice *sdr = SoapySDRDevice_make(&args);
+    SoapySDRKwargs_clear(&args);
+
+    if (sdr == NULL)
+    {
+        printf("SoapySDRDevice_make fail: %s\n", SoapySDRDevice_lastError());
+        return EXIT_FAILURE;
+    }
+
+    //query device info
+    char** names = SoapySDRDevice_listAntennas(sdr, SOAPY_SDR_RX, 0, &length);
+    printf("Rx antennas: ");
+    for (size_t i = 0; i < length; i++) printf("%s, ", names[i]);
     printf("\n");
-  }
+    SoapySDRStrings_clear(&names, length);
 
-  // 1. create device instance
+    names = SoapySDRDevice_listGains(sdr, SOAPY_SDR_RX, 0, &length);
+    printf("Rx gains: ");
+    for (size_t i = 0; i < length; i++) printf("%s, ", names[i]);
+    printf("\n");
+    SoapySDRStrings_clear(&names, length);
 
-  //	1.1 set arguments
-  //		args can be user defined or from the enumeration result
-  //		We use first results as args here:
-  SoapySDR::Kwargs args = results[0];
+    SoapySDRRange *ranges = SoapySDRDevice_getFrequencyRange(sdr, SOAPY_SDR_RX, 0, &length);
+    printf("Rx freq ranges: ");
+    for (size_t i = 0; i < length; i++) printf("[%g Hz -> %g Hz], ", ranges[i].minimum, ranges[i].maximum);
+    printf("\n");
+    free(ranges);
 
-  //	1.2 make device
-  SoapySDR::Device *sdr = SoapySDR::Device::make(args);
+    //apply settings
+    if (SoapySDRDevice_setSampleRate(sdr, SOAPY_SDR_RX, 0, 1e6) != 0)
+    {
+        printf("setSampleRate fail: %s\n", SoapySDRDevice_lastError());
+    }
+    if (SoapySDRDevice_setFrequency(sdr, SOAPY_SDR_RX, 0, 433.3e6, NULL) != 0)
+    {
+        printf("setFrequency fail: %s\n", SoapySDRDevice_lastError());
+    }
 
-  if (sdr == NULL)
-  {
-    fprintf(stderr, "SoapySDR::Device::make failed\n");
-    return EXIT_FAILURE;
-  }
+    //setup a stream (complex floats)
+    SoapySDRStream *rxStream = SoapySDRDevice_setupStream(sdr, SOAPY_SDR_RX, SOAPY_SDR_CF32, NULL, 0, NULL, NULL);
+    if (rxStream == NULL)
+    {
+        printf("setupStream fail: %s\n", SoapySDRDevice_lastError());
+        SoapySDRDevice_unmake(sdr);
+        return EXIT_FAILURE;
+    }
+    SoapySDRDevice_activateStream(sdr, rxStream, 0, 0, 0); //start streaming
 
-  // 2. query device info
-  std::vector<std::string> str_list; // string list
+    //create a re-usable buffer for rx samples
+    complex float buff[1024];
 
-  //	2.1 antennas
-  str_list = sdr->listAntennas(SOAPY_SDR_RX, 0);
-  printf("Rx antennas: ");
-  for (int i = 0; i < str_list.size(); ++i)
-    printf("%s,", str_list[i].c_str());
-  printf("\n");
+    //receive some samples
+    for (size_t i = 0; i < 100; i++)
+    {
+        void *buffs[] = {buff}; //array of buffers
+        int flags; //flags set by receive operation
+        long long timeNs; //timestamp for receive buffer
+        int ret = SoapySDRDevice_readStream(sdr, rxStream, buffs, 1024, &flags, &timeNs, 100000);
+        printf("ret=%d, flags=%d, timeNs=%lld\n", ret, flags, timeNs);
+    }
 
-  //	2.2 gains
-  str_list = sdr->listGains(SOAPY_SDR_RX, 0);
-  printf("Rx Gains: ");
-  for (int i = 0; i < str_list.size(); ++i)
-    printf("%s, ", str_list[i].c_str());
-  printf("\n");
+    //shutdown the stream
+    SoapySDRDevice_deactivateStream(sdr, rxStream, 0, 0); //stop streaming
+    SoapySDRDevice_closeStream(sdr, rxStream);
 
-  //	2.3. ranges(frequency ranges)
-  SoapySDR::RangeList ranges = sdr->getFrequencyRange(SOAPY_SDR_RX, 0);
-  printf("Rx freq ranges: ");
-  for (int i = 0; i < ranges.size(); ++i)
-    printf("[%g Hz -> %g Hz], ", ranges[i].minimum(), ranges[i].maximum());
-  printf("\n");
+    //cleanup device handle
+    SoapySDRDevice_unmake(sdr);
 
-  // 3. apply settings
-  sdr->setSampleRate(SOAPY_SDR_RX, 0, 10e6);
-
-  sdr->setFrequency(SOAPY_SDR_RX, 0, 433e6);
-  
-  // 4. setup a stream (complex floats)
-  SoapySDR::Stream *rx_stream = sdr->setupStream(SOAPY_SDR_RX, SOAPY_SDR_CF32);
-  if (rx_stream == NULL)
-  {
-    fprintf(stderr, "Failed\n");
-    SoapySDR::Device::unmake(sdr);
-    return EXIT_FAILURE;
-  }
-  sdr->activateStream(rx_stream, 0, 0, 0);
-
-  // 5. create a re-usable buffer for rx samples
-  std::complex<float> buff[1024];
-
-  // 6. receive some samples
-  for (int i = 0; i < 10; ++i)
-  {
-    void *buffs[] = {buff};
-    int flags;
-    long long time_ns;
-    int ret = sdr->readStream(rx_stream, buffs, 1024, flags, time_ns, 1e5);
-    printf("ret = %d, flags = %d, time_ns = %lld\n", ret, flags, time_ns);
-  }
-
-  // 7. shutdown the stream
-  sdr->deactivateStream(rx_stream, 0, 0); // stop streaming
-  sdr->closeStream(rx_stream);
-
-  // 8. cleanup device handle
-  SoapySDR::Device::unmake(sdr);
-  printf("Done\n");
-
-  return EXIT_SUCCESS;
+    printf("Done\n");
+    return EXIT_SUCCESS;
 }
