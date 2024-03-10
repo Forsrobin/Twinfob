@@ -1,6 +1,6 @@
 {
   "env": {
-    "myIncludePath": ["${workspaceFolder}/include", "${workspaceFolder}/src", "C:/Program Files/PothosSDR/**"],
+    "myIncludePath": ["${workspaceFolder}/src", "C:/Program Files/PothosSDR/**"],
     "myDefines": ["DEBUG", "MY_FEATURE=1"]
   },
   "configurations": [

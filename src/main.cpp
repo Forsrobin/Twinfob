@@ -72,7 +72,7 @@ int main()
   sdr->setSampleRate(SOAPY_SDR_RX, 0, 10e6);
 
   sdr->setFrequency(SOAPY_SDR_RX, 0, 433e6);
-
+  
   // 4. setup a stream (complex floats)
   SoapySDR::Stream *rx_stream = sdr->setupStream(SOAPY_SDR_RX, SOAPY_SDR_CF32);
   if (rx_stream == NULL)
