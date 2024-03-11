@@ -58,13 +58,21 @@ int main(void)
     {
         printf("setSampleRate fail: %s\n", SoapySDRDevice_lastError());
     }
+<<<<<<< HEAD
     if (SoapySDRDevice_setFrequency(sdr, SOAPY_SDR_RX, 0, 912.3e6, NULL) != 0)
+=======
+    if (SoapySDRDevice_setFrequency(sdr, SOAPY_SDR_RX, 0, 433.3e6, NULL) != 0)
+>>>>>>> 70b577b5b1b71d1492eeb661ddc32eeea2cfb11d
     {
         printf("setFrequency fail: %s\n", SoapySDRDevice_lastError());
     }
 
     //setup a stream (complex floats)
+<<<<<<< HEAD
     SoapySDRStream *rxStream = SoapySDRDevice_setupStream(sdr, SOAPY_SDR_RX, SOAPY_SDR_CF32, NULL, 0, NULL);
+=======
+    SoapySDRStream *rxStream = SoapySDRDevice_setupStream(sdr, SOAPY_SDR_RX, SOAPY_SDR_CF32, NULL, 0, NULL, NULL);
+>>>>>>> 70b577b5b1b71d1492eeb661ddc32eeea2cfb11d
     if (rxStream == NULL)
     {
         printf("setupStream fail: %s\n", SoapySDRDevice_lastError());
@@ -77,7 +85,11 @@ int main(void)
     complex float buff[1024];
 
     //receive some samples
+<<<<<<< HEAD
     for (size_t i = 0; i < 10; i++)
+=======
+    for (size_t i = 0; i < 100; i++)
+>>>>>>> 70b577b5b1b71d1492eeb661ddc32eeea2cfb11d
     {
         void *buffs[] = {buff}; //array of buffers
         int flags; //flags set by receive operation
