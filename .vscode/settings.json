@@ -1,6 +1,26 @@
 {
   "files.associations": {
     "utility": "cpp",
-    "map": "cpp"
+    "map": "cpp",
+    "stdlib.h": "c",
+    "iostream": "cpp",
+    "istream": "cpp",
+    "ostream": "cpp",
+    "ios": "cpp",
+    "xlocnum": "cpp",
+    "cstdlib": "cpp",
+    "iterator": "cpp",
+    "streambuf": "cpp",
+    "xiosbase": "cpp",
+    "system_error": "cpp",
+    "atomic": "cpp",
+    "cstring": "cpp",
+    "ctime": "cpp",
+    "format": "cpp",
+    "initializer_list": "cpp",
+    "vector": "cpp",
+    "xstring": "cpp",
+    "xtree": "cpp",
+    "xutility": "cpp"
   }
 }
