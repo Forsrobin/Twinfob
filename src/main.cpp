@@ -8,7 +8,7 @@
 #include <string> // std::string
 #include <vector> // std::vector<...>
 #include <map>    // std::map< ... , ... >
-
+#include <iostream>
 
 int main()
 {
@@ -32,7 +32,7 @@ int main()
   //	1.1 set arguments
   //		args can be user defined or from the enumeration result
   //		We use first results as args here:
-  SoapySDR::Kwargs args = results[0];
+  SoapySDR::Kwargs args = results[3];
 
   //	1.2 make device
   SoapySDR::Device *sdr = SoapySDR::Device::make(args);
@@ -68,7 +68,7 @@ int main()
   printf("\n");
 
   // 3. apply settings
-  sdr->setSampleRate(SOAPY_SDR_RX, 0, 10e6);
+  sdr->setSampleRate(SOAPY_SDR_RX, 0, 1e6);
 
   sdr->setFrequency(SOAPY_SDR_RX, 0, 433e6);
 
@@ -83,21 +83,21 @@ int main()
   sdr->activateStream(rx_stream, 0, 0, 0);
 
   // 5. create a re-usable buffer for rx samples
-    std::complex<float> buff[1024];
+  std::complex<float> buff[1024];
 
-    // 6. receive some samples
-    for (int i = 0; i < 10; ++i)
-    {
-      void *buffs[] = {buff};
-      int flags;
-      long long time_ns;
-      int ret = sdr->readStream(rx_stream, buffs, 1024, flags, time_ns, static_cast<long>(1e5));
-      printf("ret = %d, flags = %d, time_ns = %lld\n", ret, flags, time_ns);
-    }
+  // 6. receive some samples
+  for (int i = 0; i < 10; ++i)
+  {
+    void *buffs[] = {buff};
+    int flags;
+    long long time_ns;
+    int ret = sdr->readStream(rx_stream, buffs, 1024, flags, time_ns, static_cast<const long>(1e6));
+    printf("ret = %d, flags = %d, time_ns = %lld\n", ret, flags, time_ns);
+  }
 
-    // 7. shutdown the stream
-    sdr->deactivateStream(rx_stream, 0, 0); // stop streaming
-    sdr->closeStream(rx_stream);
+  // // 7. shutdown the stream
+  sdr->deactivateStream(rx_stream, 0, static_cast<const long long>(100)); // stop streaming
+  sdr->closeStream(rx_stream);
 
   // 8. cleanup device handle
   SoapySDR::Device::unmake(sdr);
