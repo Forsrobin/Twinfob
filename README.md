@@ -1,2 +1,2 @@
 # Twinfob
-A native application that will do some coll stuff
+A native application that will do some cool stuff
