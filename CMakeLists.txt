@@ -2,7 +2,7 @@
 # === Set up build requirements == #
 # ================================ #
 cmake_minimum_required(VERSION 3.5)
-project(TwinFob)
+project(TwinFob LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -20,18 +20,11 @@ if (BUILD_TESTS)
 endif ()
 
 # ================================ #
-# === Find required libraries ==== #
+# === Find required modules   ==== #
 # ================================ #
-find_package(SoapySDR NO_MODULE  REQUIRED)
-
-if (NOT SoapySDR_FOUND)
-    message(WARNING "SoapySDR development files not found - skipping support")
-    return()
-endif ()
+add_subdirectory(modules)
 
 # ================================ #
 # === Create build targets ======= #
 # ================================ #
-add_executable(${TARGET_NAME} src/main.cpp)
-target_link_libraries(${TARGET_NAME} SoapySDR)
-install(TARGETS ${TARGET_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
+add_subdirectory(src)
