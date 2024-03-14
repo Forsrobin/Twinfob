@@ -20,99 +20,11 @@
       }
     },
     {
-      "name": "deb",
-      "hidden": true,
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "BUILD_TESTS": true,
-        "CMAKE_EXPORT_COMPILE_COMMANDS": true
-      }
-    },
-    {
-      "name": "unix-make",
-      "hidden": true,
-      "generator": "Unix Makefiles",
-      "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "g++",
-        "CMAKE_C_COMPILER": "gcc",
-        "CMAKE_CXX_FLAGS_INIT": "$env{CMAKE_CXX_FLAGS} -Werror -Wall -Wextra -pedantic"
-      }
-    },
-    {
-      "name": "unix-ninja",
-      "hidden": true,
-      "generator": "Ninja",
-      "cacheVariables": {
-        "CMAKE_C_COMPILER": "clang-17",
-        "CMAKE_CXX_COMPILER": "clang++-17",
-        "CMAKE_CXX_FLAGS_INIT": "$env{CMAKE_CXX_FLAGS} -Werror -Wall -Wextra -pedantic"
-      }
-    },
-    {
       "name": "vs2022",
       "hidden": true,
       "generator": "Visual Studio 17 2022",
       "cacheVariables": {
         "CMAKE_CXX_FLAGS_INIT": "$env{CMAKE_CXX_FLAGS_INIT} $env{CMAKE_CXX_FLAGS} /W4 /WX /EHsc"
-      }
-    },
-    {
-      "name": "vs2022-shared",
-      "hidden": true,
-      "generator": "Visual Studio 17 2022",
-      "cacheVariables": {
-        "CMAKE_CXX_FLAGS_INIT": "$env{CMAKE_CXX_FLAGS_INIT} $env{CMAKE_CXX_FLAGS} /W4 /WX /EHsc",
-        "BUILD_SHARED_LIBS": true
-      }
-    },
-    {
-      "name": "unix-rel",
-      "displayName": "Unix Make Release",
-      "binaryDir": "${sourceDir}/build/unix-rel",
-      "inherits": [
-        "unix-make",
-        "rel"
-      ],
-      "cacheVariables": {
-        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/unix-rel/install"
-      }
-    },
-    {
-      "name": "unix-rel-ninja",
-      "displayName": "Unix Ninja Clang Release",
-      "binaryDir": "${sourceDir}/build/unix-rel-ninja",
-      "inherits": [
-        "unix-ninja",
-        "rel"
-      ],
-      "cacheVariables": {
-        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/unix-rel-ninja/install"
-      }
-    },
-    {
-      "name": "unix-deb",
-      "displayName": "Unix Make Debug",
-      "binaryDir": "${sourceDir}/build/unix-deb",
-      "inherits": [
-        "unix-make",
-        "deb"
-      ],
-      "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "-O0 --coverage -g -fsanitize=address",
-        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/unix-deb/install"
-      }
-    },
-    {
-      "name": "unix-deb-ninja",
-      "displayName": "Unix Ninja Clang Debug",
-      "binaryDir": "${sourceDir}/build/unix-deb-ninja",
-      "inherits": [
-        "unix-ninja",
-        "deb"
-      ],
-      "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "-O0 --coverage -g -fsanitize=address",
-        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/unix-deb-ninja/install"
       }
     },
     {
@@ -126,42 +38,6 @@
       "cacheVariables": {
         "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/vs2022-rel/install"
       }
-    },
-    {
-      "name": "vs2022-deb",
-      "displayName": "Visual Studio 2022 Debug",
-      "binaryDir": "${sourceDir}/build/vs2022-deb",
-      "inherits": [
-        "vs2022",
-        "deb"
-      ],
-      "cacheVariables": {
-        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/vs2022-deb/install"
-      }
-    },
-    {
-      "name": "vs2022-rel-shared",
-      "displayName": "Visual Studio 2022 Release Shared",
-      "binaryDir": "${sourceDir}/build/vs2022-rel-shared",
-      "inherits": [
-        "vs2022-shared",
-        "rel"
-      ],
-      "cacheVariables": {
-        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/vs2022-rel/install"
-      }
-    },
-    {
-      "name": "vs2022-deb-shared",
-      "displayName": "Visual Studio 2022 Debug Shared",
-      "binaryDir": "${sourceDir}/build/vs2022-deb-shared",
-      "inherits": [
-        "vs2022-shared",
-        "deb"
-      ],
-      "cacheVariables": {
-        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/vs2022-rel/install"
-      }
     }
   ],
   "buildPresets": [
@@ -170,24 +46,6 @@
       "displayName": "Visual Studio 2022 Release Build",
       "configurePreset": "vs2022-rel",
       "configuration": "Release"
-    },
-    {
-      "name": "vs2022-deb",
-      "displayName": "Visual Studio 2022 Debug Build",
-      "configurePreset": "vs2022-deb",
-      "configuration": "Debug"
-    },
-    {
-      "name": "vs2022-rel-shared",
-      "displayName": "Visual Studio 2022 Release Shared Build",
-      "configurePreset": "vs2022-rel-shared",
-      "configuration": "Release"
-    },
-    {
-      "name": "vs2022-deb-shared",
-      "displayName": "Visual Studio 2022 Debug Shared Build",
-      "configurePreset": "vs2022-deb-shared",
-      "configuration": "Debug"
     }
   ]
 }

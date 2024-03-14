@@ -14,10 +14,3 @@ if (NOT Slint_FOUND)
   return()
 endif (NOT Slint_FOUND)
 
-# SopaySDR ===================================
-find_package(SoapySDR NO_MODULE  REQUIRED)
-
-if (NOT SoapySDR_FOUND)
-    message(WARNING "SoapySDR development files not found - skipping support")
-    return()
-endif (NOT SoapySDR_FOUND)

@@ -24,6 +24,14 @@ endif ()
 # ================================ #
 add_subdirectory(modules)
 
+# Modules that need's to be in root (Local projects)
+find_package(SoapySDR NO_MODULE  REQUIRED)
+
+if (NOT SoapySDR_FOUND)
+    message(WARNING "SoapySDR development files not found - skipping support")
+    return()
+endif (NOT SoapySDR_FOUND)
+
 # ================================ #
 # === Create build targets ======= #
 # ================================ #
