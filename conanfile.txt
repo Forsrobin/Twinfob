@@ -1,0 +1,12 @@
+[requires]
+qt/6.6.2
+
+[generators]
+CMakeDeps
+CMakeToolchain
+
+[layout]
+cmake_layout
+
+[options]
+qt/6.6.2:shared=True
