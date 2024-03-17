@@ -31,11 +31,12 @@ if (NOT SoapySDR_FOUND)
     return()
 endif (NOT SoapySDR_FOUND)
 
-find_package(Qt6 REQUIRED COMPONENTS)
+find_package(Qt6 REQUIRED)
 
 if (NOT Qt6_FOUND)
   message(FATAL_ERROR "Qt6 not found")
 endif (NOT Qt6_FOUND)
+
 
 # ================================ #
 # === Create build targets ======= #

@@ -12,12 +12,6 @@
       "args": [],
       "stopAtEntry": false,
       "cwd": "${fileDirname}",
-      "environment": [
-        {
-          "name": "QT_QPA_PLATFORM_PLUGIN_PATH",
-          "value": "C:/Users/forsr/.conan2/p/b/qt260e6fecf6913/b/build/qtbase/res/archdatadir/plugins/platforms"
-        }
-      ],
       "console": "externalTerminal",
     },
   ]

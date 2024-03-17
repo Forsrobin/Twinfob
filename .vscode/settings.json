@@ -82,7 +82,9 @@
     "xloctime": "cpp",
     "xmemory": "cpp",
     "xtr1common": "cpp",
-    "qtplugin": "cpp"
+    "qtplugin": "cpp",
+    "qpushbutton": "cpp",
+    "qpluginloader": "cpp"
   },
   "cmake.useCMakePresets": "always",
 }
